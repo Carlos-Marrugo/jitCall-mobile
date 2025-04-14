@@ -1,43 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+// src/app/auth/registro/registro.page.ts
+import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AutenticacionService } from '../../core/services/autenticacion.service';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule } from '@angular/forms';
-import { Validators } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
-import { AutenticacionService } from 'src/app/core/services/autenticacion.service';
 
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
   styleUrls: ['./registro.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterModule]
 })
-export class RegistroPage implements OnInit {
-
+export class RegistroPage {
   formularioRegistro = this.fb.group({
-    nombre: ['', Validators.required],
-    apellido: ['', Validators.required],
+    nombre: ['', [Validators.required]],
+    apellido: ['', [Validators.required]],
     correo: ['', [Validators.required, Validators.email]],
-    telefono: ['', Validators.required],
+    telefono: ['', [Validators.required]],
     contrasena: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   constructor(
     private fb: FormBuilder,
-    private authService: AutenticacionService
-  ) { }
+    private authService: AutenticacionService,
+    private router: Router
+  ) {}
 
   async registrar() {
     if (this.formularioRegistro.valid) {
-      try{
-        await this.authService.registrarUsuario(this.formularioRegistro.value);
+      try {
+        const datosRegistro = {
+          nombre: this.formularioRegistro.value.nombre!,
+          apellido: this.formularioRegistro.value.apellido!,
+          correo: this.formularioRegistro.value.correo!,
+          telefono: this.formularioRegistro.value.telefono!,
+          contrasena: this.formularioRegistro.value.contrasena!
+        };
+        
+        await this.authService.registrarUsuario(datosRegistro);
       } catch (error) {
-        console.log("Eror al registrar")
+        console.log(error)
       }
+    } else {
+      await this.authService.mostrarToast('Por favor completa todos los campos correctamente', 'danger');
     }
   }
-
-  ngOnInit() {
-  }
-
 }

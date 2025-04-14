@@ -1,20 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AutenticacionService } from '../../core/services/autenticacion.service';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterModule]
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
+  formularioLogin = this.fb.group({
+    correo: ['', [Validators.required, Validators.email]],
+    contrasena: ['', Validators.required]
+  });
 
-  constructor() { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AutenticacionService,
+    private router: Router
+  ) {}
 
-  ngOnInit() {
+  async login() {
+    if (this.formularioLogin.valid) {
+      try {
+        const { correo, contrasena } = this.formularioLogin.value;
+        await this.authService.login(correo!, contrasena!);
+        this.router.navigate(['/home']);
+      } catch (error: any) {
+        console.error('Error en login:', error);
+      }
+    }
   }
-
 }
