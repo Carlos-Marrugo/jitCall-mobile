@@ -13,5 +13,9 @@ export const routes: Routes = [
     canActivate: [AuthGuard] 
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
+  {
+    path: 'gestion-contactos',
+    loadComponent: () => import('./contactos/pages/gestion-contactos/gestion-contactos.page').then( m => m.GestionContactosPage)
+  }
 ];
