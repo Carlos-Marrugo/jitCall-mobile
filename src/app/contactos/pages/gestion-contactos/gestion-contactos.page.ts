@@ -1,20 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonTitle, 
+  IonContent, 
+  IonTabs, 
+  IonTabBar, 
+  IonTabButton,
+  IonIcon,
+  IonLabel 
+} from '@ionic/angular/standalone';
+import { ListaContactosComponent } from '../../components/lista-contactos/lista-contactos.component';
+import { AgregarContactoComponent } from '../../components/agregar-contacto/agregar-contacto.component';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-gestion-contactos',
   templateUrl: './gestion-contactos.page.html',
   styleUrls: ['./gestion-contactos.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonTabs, IonTabBar, IonTabButton,
+    ListaContactosComponent, AgregarContactoComponent, IonIcon, IonLabel,
+  ]
 })
-export class GestionContactosPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class GestionContactosPage {
+  activeTab = 'lista';
 }

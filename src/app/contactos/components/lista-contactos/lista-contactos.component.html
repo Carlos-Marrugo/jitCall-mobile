@@ -1,3 +1,17 @@
-<p>
-  lista-contactos works!
-</p>
+<ion-list>
+  <ion-item *ngFor="let contacto of contactos$ | async">
+    <ion-avatar slot="start">
+      <ion-icon name="person-circle"></ion-icon>
+    </ion-avatar>
+    
+    <ion-label>
+      <h2>{{ contacto.nombre }} {{ contacto.apellido }}</h2>
+      <p>{{ contacto.telefono }}</p>
+      <p *ngIf="contacto.email">{{ contacto.email }}</p>
+    </ion-label>
+    
+    <ion-button fill="clear" color="danger" (click)="eliminarContacto(contacto.id!)">
+      <ion-icon name="trash" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-list>

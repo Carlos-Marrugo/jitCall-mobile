@@ -1,23 +1,43 @@
 import { Component } from '@angular/core';
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonTitle, 
+  IonContent, 
+  IonButtons, 
+  IonButton, 
+  IonIcon,
+  IonFab,
+  IonFabButton
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { addOutline, logOutOutline } from 'ionicons/icons';
 import { AutenticacionService } from '../core/services/autenticacion.service';
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import { ListaContactosComponent } from '../contactos/components/lista-contactos/lista-contactos.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonButtons, 
+    IonButton, 
+    IonIcon,
+    IonFab,
+    IonFabButton,
+    ListaContactosComponent
+  ]
 })
 export class HomePage {
-  constructor(private authService: AutenticacionService) {}
-
-  async logout() {
-    try {
-      await this.authService.logout();
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-    }
+  constructor(private authService : AutenticacionService) {
+    addIcons({ addOutline, logOutOutline });
+  }
+  logout() {
+    this.authService.logout();
   }
 }

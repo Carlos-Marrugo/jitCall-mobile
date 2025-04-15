@@ -1,3 +1,30 @@
-<p>
-  agregar-contacto works!
-</p>
+<form [formGroup]="formulario" (ngSubmit)="agregarContacto()">
+  <ion-item>
+    <ion-label position="stacked">Nombre</ion-label>
+    <ion-input formControlName="nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Apellido</ion-label>
+    <ion-input formControlName="apellido"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Teléfono</ion-label>
+    <ion-input formControlName="telefono" type="tel"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Email (Opcional)</ion-label>
+    <ion-input formControlName="email" type="email"></ion-input>
+  </ion-item>
+
+  <ion-button 
+    type="submit" 
+    expand="block" 
+    [disabled]="formulario.invalid"
+    class="ion-margin-top">
+    <ion-icon name="add" slot="start"></ion-icon>
+    Agregar Contacto
+  </ion-button>
+</form>

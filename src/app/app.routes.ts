@@ -3,6 +3,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LoginPage } from './auth/login/login.page';
 import { RegistroPage } from './auth/registro/registro.page';
 import { HomePage } from './home/home.page';
+import { GestionContactosPage } from './contactos/pages/gestion-contactos/gestion-contactos.page';
+import { AgregarContactoComponent } from './contactos/components/agregar-contacto/agregar-contacto.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPage },
@@ -10,12 +12,13 @@ export const routes: Routes = [
   { 
     path: 'home', 
     component: HomePage,
-    canActivate: [AuthGuard] 
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'agregar-contacto',
+        component: AgregarContactoComponent
+      }
+    ]
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
-  {
-    path: 'gestion-contactos',
-    loadComponent: () => import('./contactos/pages/gestion-contactos/gestion-contactos.page').then( m => m.GestionContactosPage)
-  }
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
