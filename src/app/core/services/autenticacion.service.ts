@@ -38,6 +38,9 @@ export class AutenticacionService {
   }
 
   private manejarErrorFirebase(error: any): string {
+    if (error.code === 'unavailable') {
+      return 'Sin conexión a Internet. Por favor verifica tu conexión';
+    }
     switch (error.code) {
       case 'auth/email-already-in-use':
         return 'El correo ya está registrado';
@@ -121,4 +124,7 @@ export class AutenticacionService {
     const user = await firstValueFrom(authState(this.auth));
     return !!user;
   }
+
+  
+
 }
