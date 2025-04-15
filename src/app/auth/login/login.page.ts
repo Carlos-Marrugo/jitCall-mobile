@@ -12,16 +12,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterModule]
 })
+
 export class LoginPage {
   formularioLogin = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
-    contrasena: ['', Validators.required]
+    contrasena: ['', [Validators.required]]
   });
 
   constructor(
     private fb: FormBuilder,
-    private authService: AutenticacionService,
-    private router: Router
+    private authService: AutenticacionService
   ) {}
 
   async login() {
@@ -29,8 +29,8 @@ export class LoginPage {
       try {
         const { correo, contrasena } = this.formularioLogin.value;
         await this.authService.login(correo!, contrasena!);
-        this.router.navigate(['/home']);
-      } catch (error: any) {
+        this.formularioLogin.reset(); 
+      } catch (error) {
         console.error('Error en login:', error);
       }
     }

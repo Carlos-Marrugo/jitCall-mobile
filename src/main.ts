@@ -18,5 +18,10 @@ bootstrapApplication(AppComponent, {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      // Configuración adicional si es necesaria
+      return firestore;
+    }),
   ],
 }).catch(err => console.error(err));

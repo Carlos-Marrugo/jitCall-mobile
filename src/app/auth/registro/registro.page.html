@@ -1,3 +1,4 @@
+<!-- src/app/auth/registro/registro.page.html -->
 <ion-header>
   <ion-toolbar>
     <ion-title>Registro</ion-title>
@@ -7,48 +8,35 @@
 <ion-content class="ion-padding">
   <form [formGroup]="formularioRegistro" (ngSubmit)="registrar()">
     <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input formControlName="nombre"></ion-input>
+      <ion-label position="stacked">Nombre</ion-label>
+      <ion-input formControlName="nombre" type="text"></ion-input>
     </ion-item>
-    
+    <ion-note color="danger" *ngIf="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched">
+      Nombre requerido
+    </ion-note>
+
     <ion-item>
-      <ion-label position="floating">Apellido</ion-label>
-      <ion-input formControlName="apellido"></ion-input>
+      <ion-label position="stacked">Apellido</ion-label>
+      <ion-input formControlName="apellido" type="text"></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="floating">Correo Electrónico</ion-label>
+      <ion-label position="stacked">Correo Electrónico</ion-label>
       <ion-input formControlName="correo" type="email"></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="floating">Teléfono</ion-label>
+      <ion-label position="stacked">Teléfono</ion-label>
       <ion-input formControlName="telefono" type="tel"></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
+      <ion-label position="stacked">Contraseña</ion-label>
       <ion-input formControlName="contrasena" type="password"></ion-input>
     </ion-item>
-    
-    <ion-button 
-      type="submit" 
-      expand="block" 
-      [disabled]="formularioRegistro.invalid"
-      class="ion-margin-top">
+
+    <ion-button type="submit" expand="block" [disabled]="formularioRegistro.invalid">
       Registrarse
     </ion-button>
-    
-    <ion-text color="danger" *ngIf="formularioRegistro.get('contrasena')?.errors?.['minlength']">
-      La contraseña debe tener al menos 6 caracteres
-    </ion-text>
   </form>
-  
-  <ion-button 
-    routerLink="/login" 
-    expand="block" 
-    fill="clear" 
-    class="ion-margin-top">
-    ¿Ya tienes cuenta? Inicia Sesión
-  </ion-button>
 </ion-content>
