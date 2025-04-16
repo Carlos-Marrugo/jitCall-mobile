@@ -1,4 +1,3 @@
-// src/main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
@@ -18,10 +17,5 @@ bootstrapApplication(AppComponent, {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideFirestore(() => {
-      const firestore = getFirestore();
-      // Configuración adicional si es necesaria
-      return firestore;
-    }),
   ],
 }).catch(err => console.error(err));
