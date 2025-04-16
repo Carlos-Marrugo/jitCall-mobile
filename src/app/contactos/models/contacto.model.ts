@@ -5,4 +5,5 @@ export interface Contacto {
     telefono: string;
     email?: string;
     fechaCreacion?: string;
+    userId?: string; // Añade esta propiedad
   }

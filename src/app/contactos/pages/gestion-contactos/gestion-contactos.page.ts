@@ -1,18 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonTabs, 
-  IonTabBar, 
-  IonTabButton,
-  IonIcon,
-  IonLabel 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonTabs, IonTabBar, IonTabButton,
+  IonIcon, IonLabel
 } from '@ionic/angular/standalone';
 import { ListaContactosComponent } from '../../components/lista-contactos/lista-contactos.component';
 import { AgregarContactoComponent } from '../../components/agregar-contacto/agregar-contacto.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-gestion-contactos',
@@ -22,7 +15,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonTabs, IonTabBar, IonTabButton,
-    ListaContactosComponent, AgregarContactoComponent, IonIcon, IonLabel,
+    IonIcon, IonLabel,
+    ListaContactosComponent, AgregarContactoComponent
   ]
 })
 export class GestionContactosPage {

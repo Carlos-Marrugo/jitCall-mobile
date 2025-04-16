@@ -1,28 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { 
+  IonList, IonItem, IonLabel, IonAvatar, IonNote, IonButton, IonIcon 
+} from '@ionic/angular/standalone';
 import { Contacto } from '../../models/contacto.model';
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { IonList, IonItem, IonLabel, IonAvatar, IonNote, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { ContactosService } from 'src/app/core/services/contacto.service';
-
 
 @Component({
   selector: 'app-lista-contactos',
   templateUrl: './lista-contactos.component.html',
   styleUrls: ['./lista-contactos.component.scss'],
   standalone: true,
-  imports: [AsyncPipe, CommonModule, IonList, IonItem, IonLabel, IonAvatar, IonNote, IonButton, IonIcon]
+  imports: [CommonModule, IonList, IonItem, IonLabel, IonAvatar, IonNote, IonButton, IonIcon]
 })
-export class ListaContactosComponent implements OnInit {
+export class ListaContactosComponent {
   contactos$ = this.contactosService.obtenerContactos();
 
   constructor(private contactosService: ContactosService) {}
 
-  ngOnInit() {}
-
   eliminarContacto(id: string) {
-    this.contactosService.eliminarContacto(id).subscribe({
-      next: () => console.log('Contacto eliminado'),
-      error: (err) => console.error('Error eliminando contacto', err)
+    this.contactosService.eliminarContacto(id).catch(error => {
+      console.error('Error eliminando contacto:', error);
     });
   }
 }
