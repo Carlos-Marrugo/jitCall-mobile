@@ -32,7 +32,6 @@ export class ContactosService {
 
   async buscarYAgregarContacto(telefono: string) {
     try {
-      // 1. Buscar usuario con ese teléfono
       const usuariosRef = collection(this.firestore, 'usuarios');
       const q = query(usuariosRef, where('telefono', '==', telefono));
       const querySnapshot = await getDocs(q);
@@ -41,20 +40,18 @@ export class ContactosService {
         throw new Error('No se encontró usuario con ese teléfono');
       }
 
-      // 2. Verificar que no sea el propio usuario
       const userId = this.auth.currentUser?.uid;
       if (querySnapshot.docs[0].id === userId) {
         throw new Error('No puedes agregarte a ti mismo');
       }
 
-      // 3. Agregar a contactos
       const contactoData = querySnapshot.docs[0].data();
       await this.agregarContacto({
         nombre: contactoData['nombre'],
         apellido: contactoData['apellido'],
         telefono: contactoData['telefono'],
         email: contactoData['email'],
-        userId: querySnapshot.docs[0].id // Guardamos referencia al usuario original
+        userId: querySnapshot.docs[0].id 
       });
 
     } catch (error: any) {

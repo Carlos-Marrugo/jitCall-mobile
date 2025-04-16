@@ -19,14 +19,12 @@ export class AutenticacionService {
 
   async registrarUsuario(datos: any) {
     try {
-      // 1. Registrar en Authentication
       const credencial = await createUserWithEmailAndPassword(
         this.auth,
         datos.correo,
         datos.contrasena
       );
 
-      // 2. Guardar en Firestore
       await setDoc(doc(this.firestore, 'users', credencial.user.uid), {
         uid: credencial.user.uid,
         nombre: datos.nombre,
@@ -36,7 +34,6 @@ export class AutenticacionService {
         fechaRegistro: new Date().toISOString()
       });
 
-      // 3. Redirigir
       this.router.navigate(['/home']);
       await this.mostrarToast('Registro exitoso!', 'success');
       
@@ -104,7 +101,6 @@ export class AutenticacionService {
     try {
       const credencial = await signInWithEmailAndPassword(this.auth, email, password);
       
-      // Guardar datos en Storage
       await Preferences.set({
         key: 'userData',
         value: JSON.stringify({

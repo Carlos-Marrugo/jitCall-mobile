@@ -88,7 +88,6 @@ export class NotificacionesService {
   }
 
   private async obtenerApiToken(): Promise<string> {
-    // Implementación temporal - reemplaza con tu lógica real
-    return 'tu_token_de_api';
+    return 'token_api';
   }
 }
