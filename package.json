@@ -24,7 +24,8 @@
     "@angular/router": "^19.0.0",
     "@capacitor-firebase/authentication": "^7.1.0",
     "@capacitor/app": "7.0.1",
-    "@capacitor/core": "7.2.0",
+    "@capacitor/browser": "^7.0.1",
+    "@capacitor/core": "^7.2.0",
     "@capacitor/haptics": "7.0.1",
     "@capacitor/keyboard": "7.0.1",
     "@capacitor/network": "^7.0.1",
@@ -38,6 +39,7 @@
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "uuid": "^11.1.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -47,7 +49,7 @@
     "@angular-eslint/eslint-plugin-template": "^19.0.0",
     "@angular-eslint/schematics": "^19.0.0",
     "@angular-eslint/template-parser": "^19.0.0",
-    "@angular/cli": "^19.0.0",
+    "@angular/cli": "19.2.8",
     "@angular/compiler-cli": "^19.0.0",
     "@angular/language-service": "^19.0.0",
     "@capacitor/cli": "7.2.0",

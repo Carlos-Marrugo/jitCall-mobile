@@ -1,21 +1,43 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
 import { ToastController, LoadingController } from '@ionic/angular/standalone';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+  useFactory: (auth: Auth, firestore: Firestore, router: Router, toastCtrl: ToastController, loadingCtrl: LoadingController, http: HttpClient) => 
+    new AutenticacionService(auth, firestore, router, toastCtrl, loadingCtrl, http),
+  deps: [Auth, Firestore, Router, ToastController, LoadingController, HttpClient]
 })
 export class AutenticacionService {
   constructor(
-    private auth: Auth,
-    private firestore: Firestore,
-    private router: Router,
-    private toastCtrl: ToastController,
-    private loadingCtrl: LoadingController
+    private auth = inject(Auth),
+  private firestore = inject(Firestore),
+  private router = inject(Router),
+  private toastCtrl = inject(ToastController),
+  private loadingCtrl = inject(LoadingController),
+  private http = inject(HttpClient),
+    
   ) {}
+
+  async loginAPIExterna(email: string, password: string): Promise<void> {
+    try {
+      const response = await lastValueFrom(
+        this.http.post<{ token: string }>(
+          'https://ravishing-courtesy-production.up.railway.app/user/login',
+          { email, password }
+        )
+      );
+      await Preferences.set({ key: 'apiToken', value: response.token });
+    } catch (error) {
+      console.error('Error en login API externa:', error);
+      throw error;
+    }
+  }
 
   async registrarUsuario(datos: any) {
     try {

@@ -21,11 +21,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'gestion-contactos',
-    loadComponent: () => import('./contactos/pages/gestion-contactos/gestion-contactos.page').then(m => m.GestionContactosPage),
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'llamada',
     loadComponent: () => import('./llamada/llamada.page').then(m => m.LlamadaPage),
     canActivate: [AuthGuard]
@@ -36,7 +31,9 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'llamada',
-    loadComponent: () => import('./llamada/llamada.page').then( m => m.LlamadaPage)
+    path: 'agregar-contacto',
+    loadComponent: () => import('./contactos/agregar-contacto/agregar-contacto.page').then(m => m.AgregarContactoPage),
+    canActivate: [AuthGuard]
   }
+
 ];

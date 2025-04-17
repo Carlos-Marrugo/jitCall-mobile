@@ -7,11 +7,13 @@
     <ion-label>
       <h2>{{ contacto.nombre }} {{ contacto.apellido }}</h2>
       <p>{{ contacto.telefono }}</p>
-      <p *ngIf="contacto.email">{{ contacto.email }}</p>
     </ion-label>
     
-    <ion-button fill="clear" color="danger" (click)="eliminarContacto(contacto.id!)">
-      <ion-icon name="trash" slot="icon-only"></ion-icon>
+    <ion-button 
+      fill="clear" 
+      color="primary" 
+      (click)="iniciarLlamada(contacto)">
+      <ion-icon name="videocam" slot="icon-only"></ion-icon>
     </ion-button>
   </ion-item>
 </ion-list>

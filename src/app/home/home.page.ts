@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
-  IonFab, IonFabButton
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon 
 } from '@ionic/angular/standalone';
 import { ListaContactosComponent } from '../contactos/components/lista-contactos/lista-contactos.component';
-import { Router } from '@angular/router';
-import { AutenticacionService } from '../core/services/autenticacion.service';
 
 @Component({
   selector: 'app-home',
@@ -13,22 +12,17 @@ import { AutenticacionService } from '../core/services/autenticacion.service';
   styleUrls: ['home.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
-    IonFab, IonFabButton,
+    IonHeader, IonToolbar, IonTitle, IonContent, 
+    IonButtons, IonButton, IonIcon,
     ListaContactosComponent
   ]
 })
 export class HomePage {
-  constructor(
-    private authService: AutenticacionService,
-    private router: Router
-  ) {}
+  private auth = inject(Auth);
+  private router = inject(Router);
 
   async logout() {
-    await this.authService.logout();
-  }
-
-  navegarAGestionContactos() {
-    this.router.navigate(['/gestion-contactos']);
+    await this.auth.signOut();
+    this.router.navigate(['/login']);
   }
 }

@@ -3,7 +3,7 @@
     <ion-title>Mis Contactos</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="logout()">
-        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+        <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,9 +14,7 @@
   <app-lista-contactos></app-lista-contactos>
 
   <!-- Botón flotante para agregar -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="/agregar-contacto">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <ion-button routerLink="/agregar-contacto" expand="block">
+    Agregar Contacto (Prueba)
+  </ion-button>
 </ion-content>

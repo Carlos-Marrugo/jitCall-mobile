@@ -1,77 +1,110 @@
-import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, setDoc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth';
-import { Observable, from } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Firestore, collection, doc, setDoc, getDocs, query, where, DocumentData } from '@angular/fire/firestore';
+import { Auth, authState } from '@angular/fire/auth';
+import { Observable, from, map, switchMap } from 'rxjs';
 import { ToastController } from '@ionic/angular/standalone';
-import { Contacto } from 'src/app/contactos/models/contacto.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactosService {
-  private firestore = inject(Firestore);
-  private auth = inject(Auth);
-  private toastCtrl = inject(ToastController);
+  constructor(
+    private firestore: Firestore,
+    private auth: Auth,
+    private toastCtrl: ToastController
+  ) {}
 
-  obtenerContactos(): Observable<Contacto[]> {
-    const userId = this.auth.currentUser?.uid;
-    if (!userId) throw new Error('Usuario no autenticado');
-    
-    const contactosRef = collection(this.firestore, `usuarios/${userId}/contactos`);
-    return collectionData(contactosRef, { idField: 'id' }) as Observable<Contacto[]>;
+  obtenerContactos(): Observable<any[]> {
+    return authState(this.auth).pipe(
+      switchMap(user => {
+        if (!user) return from([]);
+        
+        const contactosRef = collection(this.firestore, `users/${user.uid}/contacts`);
+        const q = query(contactosRef);
+        
+        return from(getDocs(q)).pipe(
+          map(querySnapshot => 
+            querySnapshot.docs.map(doc => {
+              const data = doc.data();
+              return { 
+                id: doc.id, 
+                ...this.convertToObject(data),
+                fcmToken: data['fcmToken'] || null
+              };
+            })
+          )
+        );
+      })
+    );
   }
 
-  async agregarContacto(contacto: Omit<Contacto, 'id'>) {
-    const userId = this.auth.currentUser?.uid;
-    if (!userId) throw new Error('Usuario no autenticado');
-
-    const nuevoDoc = doc(collection(this.firestore, `usuarios/${userId}/contactos`));
-    await setDoc(nuevoDoc, { ...contacto, fechaCreacion: new Date().toISOString() });
-    await this.mostrarToast('Contacto agregado!', 'success');
-  }
-
-  async buscarYAgregarContacto(telefono: string) {
+  async buscarYAgregarContacto(telefono: string): Promise<boolean> {
     try {
-      // 1. Buscar usuario con ese teléfono
-      const usuariosRef = collection(this.firestore, 'usuarios');
-      const q = query(usuariosRef, where('telefono', '==', telefono));
+      const user = await this.getCurrentUser();
+      if (!user) throw new Error('Usuario no autenticado');
+
+      // 1. Buscar usuario por teléfono
+      const usersRef = collection(this.firestore, 'users');
+      const q = query(usersRef, where('telefono', '==', telefono));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        throw new Error('No se encontró usuario con ese teléfono');
+        await this.mostrarToast('No se encontró usuario con ese teléfono', 'warning');
+        return false;
       }
 
-      // 2. Verificar que no sea el propio usuario
-      const userId = this.auth.currentUser?.uid;
-      if (querySnapshot.docs[0].id === userId) {
-        throw new Error('No puedes agregarte a ti mismo');
+      const contactoDoc = querySnapshot.docs[0];
+      if (contactoDoc.id === user.uid) {
+        await this.mostrarToast('No puedes agregarte a ti mismo', 'warning');
+        return false;
       }
 
-      // 3. Agregar a contactos
-      const contactoData = querySnapshot.docs[0].data();
-      await this.agregarContacto({
-        nombre: contactoData['nombre'],
-        apellido: contactoData['apellido'],
-        telefono: contactoData['telefono'],
-        email: contactoData['email'],
-        userId: querySnapshot.docs[0].id // Guardamos referencia al usuario original
+      const contactoData = this.convertToObject(contactoDoc.data());
+
+      // 2. Verificar si ya es contacto
+      const contactoExistenteQuery = query(
+        collection(this.firestore, `users/${user.uid}/contacts`), 
+        where('telefono', '==', telefono)
+      );
+      const contactoExistenteSnapshot = await getDocs(contactoExistenteQuery);
+
+      if (!contactoExistenteSnapshot.empty) {
+        await this.mostrarToast('Este contacto ya existe', 'warning');
+        return false;
+      }
+
+      // 3. Agregar contacto
+      const contactoRef = doc(this.firestore, `users/${user.uid}/contacts`, contactoDoc.id);
+      await setDoc(contactoRef, {
+        ...contactoData,
+        userId: contactoDoc.id,
+        fechaAgregado: new Date().toISOString()
       });
 
-    } catch (error: any) {
-      await this.mostrarToast(error.message, 'danger');
-      throw error;
+      await this.mostrarToast('Contacto agregado con éxito', 'success');
+      return true;
+
+    } catch (error) {
+      console.error('Error agregando contacto:', error);
+      await this.mostrarToast('Error al agregar contacto', 'danger');
+      return false;
     }
   }
 
-  async eliminarContacto(id: string) {
-    const userId = this.auth.currentUser?.uid;
-    if (!userId) throw new Error('Usuario no autenticado');
-
-    await deleteDoc(doc(this.firestore, `usuarios/${userId}/contactos/${id}`));
-    await this.mostrarToast('Contacto eliminado', 'success');
+  private convertToObject(data: DocumentData): any {
+    return JSON.parse(JSON.stringify(data));
   }
 
-  private async mostrarToast(mensaje: string, color: 'success' | 'danger' | 'warning') {
+  private async getCurrentUser() {
+    return new Promise<any>((resolve) => {
+      const unsubscribe = this.auth.onAuthStateChanged(user => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+  }
+
+  private async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastCtrl.create({
       message: mensaje,
       duration: 3000,
